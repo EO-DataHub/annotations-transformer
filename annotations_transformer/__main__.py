@@ -69,21 +69,23 @@ def json_to_rdf(json_data: dict) -> bytes:
     return g.serialize(format="turtle")
 
 
-def delete_key(s3_client: botocore.client.BaseClient, bucket_name: str, key: str) -> list:
-    dest_key = get_transformed_key(key)
+def get_transformed_key(key: str, source: str, target: str) -> str:
+    new_key = key.replace(source, target)
+    new_key = new_key.replace(".json", ".ttl")
+    dest_key = f"transformed/{new_key}"
+    return dest_key
+
+
+def delete_key(
+    s3_client: botocore.client.BaseClient, bucket_name: str, key: str, source: str, target: str
+) -> list:
+    dest_key = get_transformed_key(key, source, target)
     try:
         s3_client.delete_object(Bucket=bucket_name, Key=dest_key)
         return [dest_key]
     except botocore.exceptions.ClientError as e:
         logger.error(f"Error deleting object {dest_key} from bucket {bucket_name}")
         logger.error(e)
-
-
-def get_transformed_key(key: str, source: str, target: str) -> str:
-    new_key = key.replace(source, target)
-    new_key = new_key.replace(".json", ".ttl")
-    dest_key = f"transformed/{new_key}"
-    return dest_key
 
 
 def reformat_annotations(
@@ -125,9 +127,9 @@ def interpret_message(msg_json: dict, s3_client) -> tuple:
     for key in added_keys:
         added_keys = reformat_annotations(s3_client, bucket_name, key, source, target)
     for key in updated_keys:
-        updated_keys = reformat_annotations(s3_client, bucket_name, key)
+        updated_keys = reformat_annotations(s3_client, bucket_name, key, source, target)
     for key in deleted_keys:
-        deleted_keys = delete_key(s3_client, bucket_name, key)
+        deleted_keys = delete_key(s3_client, bucket_name, key, source, target)
 
     return added_keys, updated_keys, deleted_keys
 
