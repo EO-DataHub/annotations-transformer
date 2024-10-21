@@ -3,6 +3,7 @@ import logging
 import os
 import time
 import traceback
+from urllib.parse import urlparse
 
 import boto3
 import botocore.client
@@ -52,19 +53,36 @@ def upload_file_to_s3(s3_client: botocore.client.BaseClient, bucket: str, key: s
         return None
 
 
+def is_url(value: str) -> bool:
+    try:
+        result = urlparse(value)
+        return all([result.scheme, result.netloc])
+    except ValueError:
+        return False
+
+
 def json_to_rdf(json_data: dict) -> bytes:
     g = Graph()
     ex = Namespace("http://namespace-url.org/")
 
-    for item in json_data:
-        try:
-            subject = URIRef(ex[item["id"]])
-        except KeyError:
-            logger.error(f"Error extracting id from item {item}")
-            continue
-        for key, value in item.items():
-            predicate = URIRef(ex[key])
-            g.add((subject, predicate, Literal(value)))
+    try:
+        results = json_data["result"]
+    except KeyError:
+        logger.error("No result key in JSON annotations data")
+        return
+    base_subject = URIRef(ex["result"])
+
+    for key, value in results.items():
+        subject = URIRef(ex[key])
+        g.add((base_subject, ex[key], subject))
+        for sub_key, sub_value in value.items():
+            sub_subject = URIRef(ex[sub_key])
+            g.add((subject, ex[sub_key], sub_subject))
+            for sub_sub_key, sub_sub_value in sub_value.items():
+                if is_url(sub_sub_value):
+                    g.add((sub_subject, ex[sub_sub_key], URIRef(sub_sub_value)))
+                else:
+                    g.add((sub_subject, ex[sub_sub_key], Literal(sub_sub_value)))
 
     return g.serialize(format="turtle")
 
@@ -86,6 +104,7 @@ def delete_key(
     except botocore.exceptions.ClientError as e:
         logger.error(f"Error deleting object {dest_key} from bucket {bucket_name}")
         logger.error(e)
+        return []
 
 
 def reformat_annotations(
@@ -94,12 +113,14 @@ def reformat_annotations(
     logger.info(f"Reformatting annotations for key {key}")
     file = get_file_from_s3(s3_client, bucket_name, key)
     if file is None:
-        return
+        return []
     # Load the file as a dictionary
     annotations = json.loads(file)
 
     # Reformat annotations into RDF
-    rdf_data = json_to_rdf([annotations])
+    rdf_data = json_to_rdf(annotations)
+    if not rdf_data:
+        return []
 
     # Generate transformed key
     dest_key = get_transformed_key(key, source, target)
