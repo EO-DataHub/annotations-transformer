@@ -21,10 +21,17 @@ class TestAnnotationsTransformer(unittest.TestCase):
     def test_get_file_from_s3(self, mock_boto_client):
         mock_s3_client = mock_boto_client.return_value
         mock_s3_client.get_object.return_value = {
-            "Body": MagicMock(read=MagicMock(return_value=b'{"key": "value"}'))
+            "Body": MagicMock(
+                read=MagicMock(
+                    return_value=b'{"result": {"product_information": {"product_details": {"grade": "good", "ref": "https://test"}, "availability_and_accessability": {"grade": "basic", "ref": "https://test"}}}}'
+                )
+            )
         }
         result = get_file_from_s3(mock_s3_client, "bucket", "key")
-        self.assertEqual(result, '{"key": "value"}')
+        self.assertEqual(
+            result,
+            '{"result": {"product_information": {"product_details": {"grade": "good", "ref": "https://test"}, "availability_and_accessability": {"grade": "basic", "ref": "https://test"}}}}',
+        )
 
     @patch("annotations_transformer.__main__.boto3.client")
     def test_upload_file_to_s3(self, mock_boto_client):
@@ -33,18 +40,26 @@ class TestAnnotationsTransformer(unittest.TestCase):
         mock_s3_client.put_object.assert_called_once_with(Bucket="bucket", Key="key", Body="data")
 
     def test_json_to_rdf(self):
-        json_data = [{"id": "1", "key": "value"}, {"id": "2", "key": "value"}]
+        json_data = {
+            "result": {
+                "product_information": {
+                    "product_details": {"grade": "good", "ref": "https://test"},
+                    "availability_and_accessability": {"grade": "basic", "ref": "https://test"},
+                }
+            }
+        }
         rdf_data = json_to_rdf(json_data)
-        print(rdf_data)
-        self.assertIn("@prefix ns1: <http://namespace-url.org/> .", rdf_data)
-        self.assertIn(
-            'ns1:1 ns1:id "1" ;\n    ns1:key "value" .\n',
-            rdf_data,
+        expected_rdf = (
+            "@prefix ns1: <http://namespace-url.org/> .\n\n"
+            "ns1:result ns1:product_information ns1:product_information .\n\n"
+            'ns1:availability_and_accessability ns1:grade "basic" ;\n'
+            "    ns1:ref <https://test> .\n\n"
+            'ns1:product_details ns1:grade "good" ;\n'
+            "    ns1:ref <https://test> .\n\n"
+            "ns1:product_information ns1:availability_and_accessability ns1:availability_and_accessability ;\n"
+            "    ns1:product_details ns1:product_details ."
         )
-        self.assertIn(
-            'ns1:2 ns1:id "2" ;\n    ns1:key "value" .\n',
-            rdf_data,
-        )
+        self.assertIn(expected_rdf, rdf_data)
 
     def test_get_transformed_key(self):
         result = get_transformed_key("source/key.json", "source", "target")
@@ -63,7 +78,11 @@ class TestAnnotationsTransformer(unittest.TestCase):
     def test_reformat_annotations(self, mock_boto_client):
         mock_s3_client = mock_boto_client.return_value
         mock_s3_client.get_object.return_value = {
-            "Body": MagicMock(read=MagicMock(return_value=b'{"id": "1", "key": "value"}'))
+            "Body": MagicMock(
+                read=MagicMock(
+                    return_value=b'{"result": {"product_information": {"product_details": {"grade": "good", "ref": "https://test"}, "availability_and_accessability": {"grade": "basic", "ref": "https://test"}}}}'
+                )
+            )
         }
         result = reformat_annotations(
             mock_s3_client, "bucket", "source/key.json", "source", "target"
@@ -76,7 +95,11 @@ class TestAnnotationsTransformer(unittest.TestCase):
         mock_s3_client.put_object.return_value = None
         mock_s3_client.delete_object.return_value = None
         mock_s3_client.get_object.return_value = {
-            "Body": MagicMock(read=MagicMock(return_value=b'{"id": "1", "key": "value"}'))
+            "Body": MagicMock(
+                read=MagicMock(
+                    return_value=b'{"result": {"product_information": {"product_details": {"grade": "good", "ref": "https://test"}, "availability_and_accessability": {"grade": "basic", "ref": "https://test"}}}}'
+                )
+            )
         }
         msg_json = {
             "added_keys": ["source/key_1.json"],
@@ -132,7 +155,11 @@ class TestAnnotationsTransformer(unittest.TestCase):
         mock_s3_client.put_object.return_value = None
         mock_s3_client.delete_object.return_value = None
         mock_s3_client.get_object.return_value = {
-            "Body": MagicMock(read=MagicMock(return_value=b'{"id": "1", "key": "value"}'))
+            "Body": MagicMock(
+                read=MagicMock(
+                    return_value=b'{"result": {"product_information": {"product_details": {"grade": "good", "ref": "https://test"}, "availability_and_accessability": {"grade": "basic", "ref": "https://test"}}}}'
+                )
+            )
         }
         message = {
             "added_keys": ["source/key_1.json"],
