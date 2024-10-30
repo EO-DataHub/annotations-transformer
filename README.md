@@ -1,6 +1,6 @@
 # Annotations Transformer
 
-This repository defines a transformer that handles annotations data to be ingested into the DataHub's Resource Catalogue. This data is input as JSON data and will be transformed into RDF Tutle format (.ttl) data. The data is read from S3 and then saved back to S3 in the `transformed/` directory. The transformer is triggered by Pulsar messaging and also sends another Pulsar message to continue the ingestion pipeline. Updates are also made to the input file key by replacing the input `source` with the `target` as specified in the Pulsar message. The repository also includes a Dockerfile to allow the annotations-transformer image to be built.
+This repository defines a transformer that handles annotations data to be ingested into the DataHub's Resource Catalogue. This data is input as JSON data and will be transformed into RDF format (.trig) data. The data is read from S3 and then saved back to S3 in the `transformed/` directory. The transformer is triggered by Pulsar messaging and also sends another Pulsar message to continue the ingestion pipeline. Updates are also made to the input file key by replacing the input `source` with the `target` as specified in the Pulsar message. The repository also includes a Dockerfile to allow the annotations-transformer image to be built.
 
 # Development of this component
 
