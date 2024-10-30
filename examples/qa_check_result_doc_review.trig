@@ -1,0 +1,67 @@
+@prefix dqv: <http://www.w3.org/ns/dqv#> .
+@prefix eodhqa: <https://eodatahub.org.uk/api/ontologies/qa/> .
+@prefix eodhweblinks: <https://eodatahub.org.uk/api/ontologies/weblinks/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix qb: <http://purl.org/linked-data/cube#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sdmx-attribute: <http://purl.org/linked-data/sdmx/2009/attribute#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<:qualityCheckResults> {
+    ":product_details" a dqv:QualityMeasurement ;
+        qb:dataSet "checkRun" ;
+        sdmx-attribute:unitMeasure eodhqa:gradeScale ;
+        dqv:computedOn <https://dev.eodatahub.org.uk/api/catalogue/stac/catalogs/supported-datasets/Sentinel-2%20L1C> ;
+        dqv:isMeasurementOf eodhqa:product_information ;
+        dqv:value eodhqa:gradeGood .
+
+    ":radiometric_calibration_and_characterisation)" a dqv:QualityMeasurement ;
+        qb:dataSet "checkRun" ;
+        sdmx-attribute:unitMeasure eodhqa:gradeScale ;
+        dqv:computedOn <https://dev.eodatahub.org.uk/api/catalogue/stac/catalogs/supported-datasets/Sentinel-2%20L1C> ;
+        dqv:isMeasurementOf eodhqa:metrology ;
+        dqv:value eodhqa:gradeExcellent .
+
+    ":documentation_1" a eodhweblinks:WebLink ;
+        eodhweblinks:href "url" ;
+        eodhweblinks:title "Placeholder Title"@en ;
+        eodhweblinks:type <https://www.iana.org/assignments/media-types/application/pdf> .
+
+    ":documentation_2" a eodhweblinks:WebLink ;
+        eodhweblinks:href "url" ;
+        eodhweblinks:title "Placeholder Title"@en ;
+        eodhweblinks:type <https://www.iana.org/assignments/media-types/application/pdf> .
+
+    "checkRun" a eodhqa:EODHQualityMeasurementDataset ;
+        rdfs:label "documentation review uuid" ;
+        owl:sameAs <urn:uuid:uuid> ;
+        eodhqa:datasetComputedOn <https://dev.eodatahub.org.uk/api/catalogue/stac/catalogs/supported-datasets/Sentinel-2%20L1C> ;
+        eodhqa:validityEnd "2024-10-11T09:15:14.056435+00:00"^^xsd:dateTime ;
+        eodhqa:weblink ":documentation_1",
+            ":documentation_2" .
+}
+
+{
+    ":qualityCheckResults" a prov:Entity,
+            eodhqa:QualityMetadata ;
+        prov:generatedAtTime "2024-10-11T09:15:14.056435+00:00"^^xsd:dateTime ;
+        prov:wasAttributedTo "_:author" ;
+        prov:wasGeneratedBy <https://test.eodatahub.org.uk/ades/test-workspace/ogc-api/jobs/jobID> .
+
+    <https://test.eodatahub.org.uk/ades/test-workspace/ogc-api/jobs/jobID> a prov:Activity ;
+        prov:used <https://test.eodatahub.org.uk/ades/test-workspace/ogc-api/processes/jobID> ;
+        prov:wasAssociatedWith "_:author" .
+
+    <https://test.eodatahub.org.uk/ades/test-workspace/ogc-api/processes/jobID> a prov:Entity .
+
+    "_:org" a prov:Agent,
+            prov:Organization ;
+        foaf:name "Unknown"^^xsd:string .
+
+    "_:author" a prov:Agent,
+            prov:Person ;
+        prov:actedOnBehalfOf "_:org" ;
+        foaf:givenName "S Malone"^^xsd:string .
+}
