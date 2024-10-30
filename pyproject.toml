@@ -15,7 +15,7 @@
 [project]
 name = "annotations-transformer"
 version = "0.1.0"
-description = "A transformer that handles annotations data in S3, reformatting input JSON files to be RDF files formatted in Turtle format, uploading to S3 and sending transformed PUlsar message."
+description = "A transformer that handles annotations data in S3, reformatting input JSON files to be RDF files formatted in Trig format, uploading to S3 and sending transformed PUlsar message."
 readme = "README.md"
 
 # Our target version is Python 3.11, but it may work with earlier versions.
