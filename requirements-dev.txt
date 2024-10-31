@@ -4,28 +4,42 @@
 #
 #    pip-compile --extra=dev --output-file=requirements-dev.txt
 #
-black==24.8.0
-    # via component-name (pyproject.toml)
-build==1.2.2
+black==24.10.0
+    # via annotations-transformer (pyproject.toml)
+boto3==1.35.43
+    # via annotations-transformer (pyproject.toml)
+botocore==1.35.43
+    # via
+    #   boto3
+    #   s3transfer
+build==1.2.2.post1
     # via pip-tools
+certifi==2024.8.30
+    # via pulsar-client
 cfgv==3.4.0
     # via pre-commit
 click==8.1.7
     # via
     #   black
     #   pip-tools
-distlib==0.3.8
+distlib==0.3.9
     # via virtualenv
 execnet==2.1.1
     # via pytest-xdist
 filelock==3.16.1
     # via virtualenv
+html5lib-modern==1.2
+    # via rdflib
 identify==2.6.1
     # via pre-commit
 iniconfig==2.0.0
     # via pytest
 isort==5.13.2
-    # via component-name (pyproject.toml)
+    # via annotations-transformer (pyproject.toml)
+jmespath==1.0.1
+    # via
+    #   boto3
+    #   botocore
 mypy-extensions==1.0.0
     # via black
 nodeenv==1.9.1
@@ -38,35 +52,49 @@ packaging==24.1
 pathspec==0.12.1
     # via black
 pip-tools==7.4.1
-    # via component-name (pyproject.toml)
+    # via annotations-transformer (pyproject.toml)
 platformdirs==4.3.6
     # via
     #   black
     #   virtualenv
 pluggy==1.5.0
     # via pytest
-pre-commit==3.8.0
-    # via component-name (pyproject.toml)
+pre-commit==4.0.1
+    # via annotations-transformer (pyproject.toml)
+pulsar-client==3.5.0
+    # via annotations-transformer (pyproject.toml)
+pyparsing==3.2.0
+    # via rdflib
 pyproject-hooks==1.2.0
     # via
     #   build
     #   pip-tools
 pytest==8.3.3
     # via
-    #   component-name (pyproject.toml)
+    #   annotations-transformer (pyproject.toml)
     #   pytest-mock
     #   pytest-xdist
 pytest-mock==3.14.0
-    # via component-name (pyproject.toml)
+    # via annotations-transformer (pyproject.toml)
 pytest-watcher==0.4.3
-    # via component-name (pyproject.toml)
+    # via annotations-transformer (pyproject.toml)
 pytest-xdist==3.6.1
-    # via component-name (pyproject.toml)
+    # via annotations-transformer (pyproject.toml)
+python-dateutil==2.9.0.post0
+    # via botocore
 pyyaml==6.0.2
     # via pre-commit
-ruff==0.6.8
-    # via component-name (pyproject.toml)
-virtualenv==20.26.6
+rdflib==7.1.0
+    # via annotations-transformer (pyproject.toml)
+ruff==0.7.0
+    # via annotations-transformer (pyproject.toml)
+s3transfer==0.10.3
+    # via boto3
+six==1.16.0
+    # via python-dateutil
+urllib3==2.2.3
+    # via botocore
+virtualenv==20.27.0
     # via pre-commit
 watchdog==5.0.3
     # via pytest-watcher

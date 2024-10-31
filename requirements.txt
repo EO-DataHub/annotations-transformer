@@ -4,3 +4,31 @@
 #
 #    pip-compile
 #
+boto3==1.35.43
+    # via annotations-transformer (pyproject.toml)
+botocore==1.35.43
+    # via
+    #   boto3
+    #   s3transfer
+certifi==2024.8.30
+    # via pulsar-client
+html5lib-modern==1.2
+    # via rdflib
+jmespath==1.0.1
+    # via
+    #   boto3
+    #   botocore
+pulsar-client==3.5.0
+    # via annotations-transformer (pyproject.toml)
+pyparsing==3.2.0
+    # via rdflib
+python-dateutil==2.9.0.post0
+    # via botocore
+rdflib==7.1.0
+    # via annotations-transformer (pyproject.toml)
+s3transfer==0.10.3
+    # via boto3
+six==1.16.0
+    # via python-dateutil
+urllib3==2.2.3
+    # via botocore

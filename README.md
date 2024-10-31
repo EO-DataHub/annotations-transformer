@@ -1,15 +1,6 @@
-# UK EO Data Hub Platform: template repository
+# Annotations Transformer
 
-This serves as a template repository for new UKEODHP Python-base software components.
-
-When using this template remember to:
-* Edit `pyproject.toml` and set everything marked `CHANGEME`
-* Update the dependencies as described below.
-* Create a Docker repo in AWS (https://eu-west-2.console.aws.amazon.com/ecr/create-repository?region=eu-west-2 for
-  the Telespazio UKEODHP repos) and update `Makefile` with the name of the Docker image to build.
-* Consider adding `dockerrun` and/or `run` targets to the `Makefile`.
-* Update `Dockerfile`
-* Add a description here of how to do local development.
+This repository defines a transformer that handles annotations data to be ingested into the DataHub's Resource Catalogue. This data is input as JSON data and will be transformed into RDF format (.trig) data. The data is read from S3 and then saved back to S3 in the `transformed/` directory. The transformer is triggered by Pulsar messaging and also sends another Pulsar message to continue the ingestion pipeline. Updates are also made to the input file key by replacing the input `source` with the `target` as specified in the Pulsar message. The repository also includes a Dockerfile to allow the annotations-transformer image to be built.
 
 # Development of this component
 
